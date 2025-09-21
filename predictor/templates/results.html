@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %} Sujan Prediction Results - Student ML Predictor{% endblock %}
+
+{% block content %}
+<div class="results-header">
+    <h2><i class="fas fa-chart-line"></i> Prediction Results</h2>
+    
+    {% if not model_status %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Model Not Loaded:</strong> Please run <code>python train_model.py</code> to generate the ML model first.
+        </div>
+    {% endif %}
+</div>
+
+{% if current_result %}
+<div class="current-result">
+    <div class="result-card">
+        <div class="result-header">
+            <h3><i class="fas fa-user-graduate"></i> {{ current_result.name }}</h3>
+            <span class="result-badge result-{{ current_result.prediction|lower }}">
+                {% if current_result.prediction == 'Pass' %}
+                    <i class="fas fa-check-circle"></i>
+                {% else %}
+                    <i class="fas fa-times-circle"></i>
+                {% endif %}
+                {{ current_result.prediction }}
+            </span>
+        </div>
+        
+        <div class="result-details">
+    <div class="detail-item">
+        <span class="detail-label"><i class="fas fa-star"></i> Marks:</span>
+        <span class="detail-value">{{ current_result.marks }}/100</span>
+    </div>
+
+    <div class="detail-item">
+        <span class="detail-label"><i class="fas fa-calendar-check"></i> Attendance:</span>
+        <span class="detail-value">{{ current_result.attendance }}%</span>
+    </div>
+
+    <div class="detail-item">
+        <span class="detail-label"><i class="fas fa-book"></i> Study Hours:</span>
+        <span class="detail-value">{{ current_result.study_hours }} hrs/day</span>
+    </div>
+
+    <div class="detail-item">
+        <span class="detail-label"><i class="fas fa-graduation-cap"></i> Previous GPA:</span>
+        <span class="detail-value">{{ current_result.previous_gpa }}/4.0</span>
+    </div>
+
+    <div class="detail-item">
+        <span class="detail-label"><i class="fas fa-tasks"></i> Assignments Completed:</span>
+        <span class="detail-value">{{ current_result.assignments }}%</span>
+    </div>
+
+    <div class="detail-item">
+        <span class="detail-label"><i class="fas fa-users"></i> Participation:</span>
+        <span class="detail-value">{{ current_result.participation }}%</span>
+    </div>
+</div>
+
+            </div>
+            <div class="detail-item">
+                <span class="detail-label"><i class="fas fa-percentage"></i> Confidence:</span>
+                <span class="detail-value">{{ current_result.prediction_probability|default_if_none:"0"|floatformat:1 }}%</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label"><i class="fas fa-clock"></i> Predicted:</span>
+                <span class="detail-value">{{ current_result.created_at|date:"M d, Y H:i" }}</span>
+            </div>
+        </div>
+        
+        <!-- <div class="confidence-bar">
+            <div class="confidence-label">Prediction Confidence</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ current_result.prediction_probability|default_if_none:"0"|floatformat:1 }}%"></div>
+            </div>
+            <div class="confidence-text">{{ current_result.prediction_probability|default_if_none:"0"|floatformat:1 }}%</div>
+        </div>
+    </div> -->
+    
+    <div class="action-buttons">
+        <a href="{% url 'predictor:index' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Make Another Prediction
+        </a>
+        <a href="/admin/predictor/studentprediction/" class="btn btn-secondary">
+            <i class="fas fa-cog"></i> View in Admin
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<div class="recent-predictions">
+    <h3><i class="fas fa-history"></i> Recent Predictions</h3>
+    
+    {% if recent_predictions %}
+        <div class="predictions-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Name</th>
+                        <th><i class="fas fa-star"></i> Marks</th>
+                        <th><i class="fas fa-calendar-check"></i> Attendance</th>
+                        <th><i class="fas fa-book"></i> Study Hours</th>
+                        <th><i class="fas fa-graduation-cap"></i> GPA</th>
+                        <th><i class="fas fa-tasks"></i> Assignments</th>
+                        <th><i class="fas fa-users"></i> Participation</th>
+                        <th><i class="fas fa-magic"></i> Prediction</th>
+                        <th><i class="fas fa-percentage"></i> Confidence</th>
+                        <th><i class="fas fa-clock"></i> Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prediction in recent_predictions %}
+                        <tr class="{% if current_result and prediction.id == current_result.id %}highlight{% endif %}">
+                            <td>{{ prediction.name }}</td>
+                            <td>{{ prediction.marks }}/100</td>
+                            <td>{{ prediction.attendance }}%</td>
+                            <td>{{ prediction.study_hours }} hrs/day</td>
+                            <td>{{ prediction.previous_gpa }}/4.0</td>
+                            <td>{{ prediction.assignments }}%</td>
+                            <td>{{ prediction.participation }}%</td>
+                            <td>
+                                <span class="badge badge-{{ prediction.prediction|lower }}">
+                                    {% if prediction.prediction == 'Pass' %}
+                                        <i class="fas fa-check"></i>
+                                    {% else %}
+                                        <i class="fas fa-times"></i>
+                                    {% endif %}
+                                    {{ prediction.prediction }}
+                                </span>
+                            </td>
+                            <td>{{ prediction.prediction_probability|default_if_none:"0"|floatformat:1 }}%</td>
+                            <td>{{ prediction.created_at|date:"M d, H:i" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+   
+
+
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h4>No predictions yet</h4>
+            <p>Start by making your first student performance prediction!</p>
+            <a href="{% url 'predictor:index' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Make First Prediction
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="model-info">
+    <h4><i class="fas fa-info-circle"></i> Model Information</h4>
+    <div class="model-status">
+        {% if model_status %}
+            <span class="status-indicator status-success">
+                <i class="fas fa-check-circle"></i> Model Loaded Successfully
+            </span>
+            <p>The machine learning model is ready and making predictions.</p>
+        {% else %}
+            <span class="status-indicator status-error">
+                <i class="fas fa-exclamation-circle"></i> Model Not Available
+            </span>
+            <p>Run the training script to generate the ML model: <code>python train_model.py</code></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

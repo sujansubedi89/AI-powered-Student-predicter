@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %} Sujan Student Prediction Form - Student ML Predictor{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h2><i class="fas fa-brain"></i> Sujan AI-Powered Student Performance Predictor </h2>
+    <p>Enter student data below to predict Pass/Fail using machine learning</p>
+</div>
+
+<div class="form-section">
+    <div class="form-container">
+        <h3><i class="fas fa-user-graduate"></i> Student Information</h3>
+        
+        <form method="post" action="{% url 'predictor:predict' %}" class="prediction-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="name">
+                    <i class="fas fa-user"></i> Student Name
+                </label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required 
+                    placeholder="Enter student name"
+                    class="form-input"
+                >
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marks">
+                        <i class="fas fa-star"></i> Marks (0-100)
+                    </label>
+                    <input 
+                        type="number" 
+                        id="marks" 
+                        name="marks" 
+                        min="0" 
+                        max="100" 
+                        step="0.1"
+                        required 
+                        placeholder="85.5"
+                        class="form-input"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="attendance">
+                        <i class="fas fa-calendar-check"></i> Attendance (%)
+                    </label>
+                    <input 
+                        type="number" 
+                        id="attendance" 
+                        name="attendance" 
+                        min="0" 
+                        max="100" 
+                        step="0.1"
+                        required 
+                        placeholder="92.0"
+                        class="form-input"
+                    >
+                </div>
+            </div>
+            <div class="form-row">
+    <div class="form-group">
+        <label for="study_hours">
+            <i class="fas fa-book-reader"></i> Study Hours per Day
+        </label>
+        <input 
+            type="number" 
+            id="study_hours" 
+            name="study_hours" 
+            min="0" 
+            max="12" 
+            step="0.1" 
+            required 
+            placeholder="4.5"
+            class="form-input"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="previous_gpa">
+            <i class="fas fa-graduation-cap"></i> Previous GPA
+        </label>
+        <input 
+            type="number" 
+            id="previous_gpa" 
+            name="previous_gpa" 
+            min="0" 
+            max="4" 
+            step="0.1" 
+            required 
+            placeholder="3.2"
+            class="form-input"
+        >
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group">
+        <label for="assignments">
+            <i class="fas fa-tasks"></i> Assignment Completion Rate (%)
+        </label>
+        <input 
+            type="number" 
+            id="assignments" 
+            name="assignments" 
+            min="0" 
+            max="100" 
+            step="1" 
+            required 
+            placeholder="85"
+            class="form-input"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="participation">
+            <i class="fas fa-users"></i> Class Participation (%)
+        </label>
+        <input 
+            type="number" 
+            id="participation" 
+            name="participation" 
+            min="0" 
+            max="100" 
+            step="1" 
+            required 
+            placeholder="75"
+            class="form-input"
+        >
+    </div>
+</div>
+
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-magic"></i> Predict Performance
+            </button>
+        </form>
+    </div>
+    
+    <div class="info-panel">
+        <h4><i class="fas fa-info-circle"></i> How it works</h4>
+        <ul>
+            <li><i class="fas fa-check"></i> Enter student's current marks and attendance percentage</li>
+            <li><i class="fas fa-check"></i> Our ML model analyzes the data</li>
+            <li><i class="fas fa-check"></i> Get instant Pass/Fail prediction with confidence score</li>
+            <li><i class="fas fa-check"></i> All predictions are saved for future reference</li>
+        </ul>
+        
+        <div class="stats">
+            <h5><i class="fas fa-chart-line"></i> Quick Stats</h5>
+            <div class="stat-item">
+                <span class="stat-number">95
+                    {% endblock %}
